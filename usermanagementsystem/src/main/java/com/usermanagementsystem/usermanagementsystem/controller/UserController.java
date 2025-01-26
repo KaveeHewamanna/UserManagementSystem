@@ -10,6 +10,7 @@ import com.usermanagementsystem.usermanagementsystem.model.User;
 import com.usermanagementsystem.usermanagementsystem.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,11 +39,14 @@ public class UserController {
 
 
     // Get user with specific id
+
     @GetMapping("/admin/{id}")
     User getUserBId(@PathVariable Long id){
         return userRepository.findById(id)
         .orElseThrow(()->new UserNotFoundException(id));
     }
+
+    // Update user by id
 
     @PutMapping("/admin/{id}")
     User updateUser(@RequestBody User newUser, @PathVariable Long id) {
@@ -54,6 +58,20 @@ public class UserController {
                     return userRepository.save(admin);
                 }).orElseThrow(() -> new UserNotFoundException(id));
     }
+
+    // Delete users by id
+    @DeleteMapping("/admin/{id}")
+    String deleteUser(@PathVariable Long id){
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+            
+        }
+
+        userRepository.deleteById(id);
+        return "User with id" + id +"has been deleted success";
+
+    }
+
 
     
 
